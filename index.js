@@ -36,6 +36,7 @@ async function run() {
   try {
     // MongoDB collections
     const userCollection = client.db("Assignment-12").collection("users");
+    const transactionCollection = client.db("Assignment-12").collection("transactions");
 
     // store users data
     app.post('/users', async(req,res)=>{
@@ -70,6 +71,15 @@ async function run() {
         }
       }
       const result = await userCollection.updateOne(filter,updatedDoc);
+      res.send(result);
+    })
+    //store transactions/payments
+    app.post('/transaction', async(req,res)=>{
+      const transaction = req.body;
+      const query = {email: transaction?.email, month: transaction?.month};
+      const existingTransaction = await transactionCollection.findOne(query);
+      if(existingTransaction) return res.send({message: "already paid"});
+      const result = await transactionCollection.insertOne(transaction);
       res.send(result);
     })
 
