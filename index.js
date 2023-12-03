@@ -49,6 +49,29 @@ async function run() {
         const result = await userCollection.insertOne(user);
         res.send(result);
     })
+    //get user data
+    app.get('/users', async(req,res)=>{
+      const result = await userCollection.find().toArray();
+      res.send(result);
+    })
+    //patch user data when verified
+    app.patch('/users/admin/:id', async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      //find the user
+      const existingUser = await userCollection.findOne(filter);
+      //if there is no user 
+      if(!existingUser) res.status(404).send({error: 'user not found'});
+      //toggle the verified property
+      const updatedVerified = !existingUser.verified;
+      const updatedDoc = {
+        $set: {
+          verified: updatedVerified
+        }
+      }
+      const result = await userCollection.updateOne(filter,updatedDoc);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     //remove this before deploy
