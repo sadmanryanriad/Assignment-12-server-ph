@@ -1,7 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const jwt = require("jsonwebtoken");
-const cookieParser = require("cookie-parser");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require("dotenv").config();
 
@@ -9,16 +7,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // middleware
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(express.json());
-app.use(cookieParser());
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ni8nft9.mongodb.net/?retryWrites=true&w=majority`;
@@ -68,24 +58,22 @@ async function run() {
       const email = req.params.email;
       const month = req.params.month;
     
-      let query = {
-        $or: [
-          { email: email },
-          { month: month }
-        ]
-      };
+      let query = {};
     
-      // If both email and month are provided, use both in the query
-      if (email && month) {
-        query = {
-          email: email,
-          month: month
-        };
+      // If email is provided and not 'all', include it in the query
+      if (email && email.toLowerCase() !== 'all') {
+        query.email = email;
+      }
+    
+      // If month is provided and not 'all', include it in the query
+      if (month && month.toLowerCase() !== 'all') {
+        query.month = month;
       }
     
       const result = await WorksheetCollection.find(query).toArray();
       res.send(result);
     });
+    
     
     //get employee data
     app.get('/employees', async(req,res)=>{
@@ -180,8 +168,8 @@ async function run() {
 
     // Send a ping to confirm a successful connection
     //remove this before deploy
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
