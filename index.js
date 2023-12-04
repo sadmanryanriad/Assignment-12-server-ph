@@ -37,6 +37,7 @@ async function run() {
     // MongoDB collections
     const userCollection = client.db("Assignment-12").collection("users");
     const transactionCollection = client.db("Assignment-12").collection("transactions");
+    const WorksheetCollection = client.db("Assignment-12").collection("work-sheet");
 
     // store users data
     app.post('/users', async(req,res)=>{
@@ -49,6 +50,12 @@ async function run() {
         }
         const result = await userCollection.insertOne(user);
         res.send(result);
+    })
+    //store work sheet data
+    app.post('/work-sheet', async(req,res)=>{
+      const data = req.body;
+      const result = await WorksheetCollection.insertOne(data);
+      res.send(result);
     })
     //get employee data
     app.get('/employees', async(req,res)=>{
