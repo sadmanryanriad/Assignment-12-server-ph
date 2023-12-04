@@ -93,6 +93,30 @@ async function run() {
       const result = await userCollection.updateOne(filter,updatedDoc);
       res.send(result);
     })
+    //patch designation for promotion to HR
+    app.patch('/users/makeHR/:id', async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          designation: 'HR'
+        }
+      }
+      const result = await userCollection.updateOne(filter,updatedDoc);
+      res.send(result);
+    })
+    //patch fire
+    app.patch('/users/admin/fire/:id', async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          fired: true
+        }
+      }
+      const result = await userCollection.updateOne(filter,updatedDoc);
+      res.send(result);
+    })
     //store transactions/payments
     app.post('/transaction', async(req,res)=>{
       const transaction = req.body;
