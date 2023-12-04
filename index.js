@@ -57,6 +57,13 @@ async function run() {
       const result = await WorksheetCollection.insertOne(data);
       res.send(result);
     })
+    //get specific work sheet data
+    app.get('/work-sheet/:email',async(req,res)=>{
+      const email = req.params.email;
+      const query = { email: email};
+      const result = await WorksheetCollection.find(query).toArray();
+      res.send(result);
+    })
     //get employee data
     app.get('/employees', async(req,res)=>{
       const query = {designation: "employee"};
