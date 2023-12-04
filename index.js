@@ -50,10 +50,22 @@ async function run() {
         const result = await userCollection.insertOne(user);
         res.send(result);
     })
-    //get user data
-    app.get('/users', async(req,res)=>{
-      const result = await userCollection.find().toArray();
+    //get employee data
+    app.get('/employees', async(req,res)=>{
+      const query = {designation: "employee"};
+      const result = await userCollection.find(query).toArray();
       res.send(result);
+    })
+    //get designation
+    app.get('/users/:email', async(req,res)=>{
+      const email = req.params.email;
+      const query = {email: email};
+      const user = await userCollection.findOne(query);
+      if(!user){
+        return res.status(404).send({mesasge: "user not found"});
+      }
+      const designation = user?.designation || 'not found';
+      res.send({designation});
     })
     //patch user data when verified
     app.patch('/users/admin/:id', async(req,res)=>{
