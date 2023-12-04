@@ -75,6 +75,13 @@ async function run() {
       const designation = user?.designation || 'not found';
       res.send({designation});
     })
+    //get details
+    app.get('/details/:slug',async(req,res)=>{
+      const id = req.params.slug;
+      const query = {_id: new ObjectId(id)};
+      const result = await userCollection.findOne(query);
+      res.send(result);
+    })
     //patch user data when verified
     app.patch('/users/admin/:id', async(req,res)=>{
       const id = req.params.id;
