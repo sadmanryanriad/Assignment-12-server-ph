@@ -56,6 +56,14 @@ async function run() {
       const result = await userCollection.find(query).toArray();
       res.send(result);
     })
+    //get employee and HR data
+    app.get('/allEmployees',async(req,res)=>{
+      const query = {
+        designation: { $in: ["employee", "HR"] }
+      };
+      const result = await userCollection.find(query).toArray();
+      res.send(result);
+    })
     //get designation
     app.get('/users/:email', async(req,res)=>{
       const email = req.params.email;
