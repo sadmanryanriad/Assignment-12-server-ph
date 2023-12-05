@@ -54,33 +54,24 @@ async function run() {
       const result = await WorksheetCollection.insertOne(data);
       res.send(result);
     })
-    //get all work sheet data
-    app.get('/work-sheet',async(req,res)=>{
-      const result = await WorksheetCollection.find().toArray();
-      res.send(result);
-    })
-    //
-    //get specific work sheet data (for sort data)
-    app.get('/work-sheet/:email/:month?', async (req, res) => {
-      const email = req.params.email;
-      const month = req.params.month;
+    //get work sheet data
+    app.get('/work-sheet', async (req, res) => {
+      const query = {};
     
-      let query = {};
+      const email = req.query.email;
+      const month = req.query.month;
     
-      // If email is provided and not 'all', include it in the query
-      if (email && email.toLowerCase() !== 'all') {
+      if (email) {
         query.email = email;
       }
     
-      // If month is provided and not 'all', include it in the query
-      if (month && month.toLowerCase() !== 'all') {
+      if (month) {
         query.month = month;
       }
     
       const result = await WorksheetCollection.find(query).toArray();
       res.send(result);
-    });
-    
+    });    
     
     //get employee data
     app.get('/employees', async(req,res)=>{
