@@ -41,6 +41,13 @@ async function run() {
         const result = await userCollection.insertOne(user);
         res.send(result);
     })
+    //check if fired or not
+    app.get('/users/fired/:email', async(req,res)=>{
+      const email = req.params.email;
+      const query = { email: email};
+      const result = await userCollection.findOne(query);
+      res.send(result?.fired);
+    })
     //store work sheet data
     app.post('/work-sheet', async(req,res)=>{
       const data = req.body;
